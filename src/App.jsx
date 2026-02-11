@@ -5,6 +5,7 @@ import Dashboard from './routes/Dashboard';
 import Collection from './routes/Collection';
 import Marketplace from './routes/Marketplace';
 import Wallet from './routes/Wallet';
+import Safety from './routes/Safety';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/collection" element={<Collection />} />
                     <Route path="/marketplace" element={<Marketplace />} />
                     <Route path="/wallet" element={<Wallet />} />
+                    <Route path="/safety" element={<Safety />} />
                 </Routes>
             </main>
             <NavBar />
