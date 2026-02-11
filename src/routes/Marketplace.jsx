@@ -14,17 +14,17 @@ const Marketplace = () => {
 
             {buyers.map(buyer => (
                 <div key={buyer.id} className="card">
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '16px' }}>
-                        <div style={{ fontSize: '32px', background: 'var(--bg)', width: '64px', height: '64px', borderRadius: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '20px' }}>
+                        <div style={{ fontSize: '32px', background: 'rgba(16, 185, 129, 0.15)', width: '64px', height: '64px', borderRadius: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {buyer.icon}
                         </div>
                         <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: '700', fontSize: '18px' }}>{buyer.name}</div>
-                            <div style={{ color: 'var(--primary-dark)', fontWeight: '600' }}>{buyer.price}</div>
-                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Accepts: {buyer.material}</div>
+                            <div style={{ fontWeight: '800', fontSize: '18px', color: 'white' }}>{buyer.name}</div>
+                            <div style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '16px' }}>{buyer.price}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{buyer.material}</div>
                         </div>
                     </div>
-                    <button className="btn btn-outline" style={{ height: '44px' }}>Offer Pickup</button>
+                    <button className="btn btn-outline" style={{ height: '48px', borderRadius: '16px', fontSize: '14px' }}>Offer Pickup</button>
                 </div>
             ))}
         </div>

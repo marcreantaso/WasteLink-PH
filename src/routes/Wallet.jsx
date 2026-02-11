@@ -6,10 +6,10 @@ const Wallet = () => {
             <h1>My Wallet</h1>
             <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>Manage your earnings and payouts.</p>
 
-            <div className="card" style={{ textAlign: 'center', background: 'var(--primary)', color: 'white' }}>
-                <div style={{ fontSize: '14px', opacity: 0.9 }}>Current Balance</div>
-                <div style={{ fontSize: '42px', fontWeight: '800', margin: '8px 0' }}>₱1,240.50</div>
-                <button className="btn" style={{ background: 'white', color: 'var(--primary)', marginTop: '16px' }}>
+            <div className="card" style={{ textAlign: 'center', background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))', color: 'white', border: 'none' }}>
+                <div style={{ fontSize: '14px', opacity: 0.9, fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Current Balance</div>
+                <div style={{ fontSize: '42px', fontWeight: '900', margin: '8px 0' }}>₱1,240.50</div>
+                <button className="btn" style={{ background: 'white', color: 'var(--primary-dark)', marginTop: '16px', height: '52px', borderRadius: '14px', fontSize: '15px' }}>
                     Withdraw via GCash
                 </button>
             </div>

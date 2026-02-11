@@ -102,14 +102,19 @@ const Collection = () => {
                 </div>
             ) : (
                 pending.map(item => (
-                    <div key={item.id} className="card" style={{ padding: '12px 16px', marginBottom: '8px' }}>
+                    <div key={item.id} className="card" style={{ padding: '16px 20px', marginBottom: '12px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <div style={{ fontWeight: '600' }}>{item.material}</div>
-                                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{new Date(item.createdAt).toLocaleTimeString()}</div>
+                            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '20px', background: 'rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
+                                    ♻️
+                                </div>
+                                <div>
+                                    <div style={{ fontWeight: '700', fontSize: '16px' }}>{item.material}</div>
+                                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{new Date(item.createdAt).toLocaleTimeString()}</div>
+                                </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontWeight: '700' }}>{item.weight} kg</div>
+                                <div style={{ fontWeight: '800', fontSize: '18px', color: 'var(--primary)' }}>{item.weight} kg</div>
                                 <span className="badge badge-pending">Pending</span>
                             </div>
                         </div>
