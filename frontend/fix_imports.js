@@ -2,27 +2,35 @@ const fs = require('fs');
 const path = require('path');
 
 const screensDir = path.join('src', 'screens');
-const files = fs.readdirSync(screensDir);
+const componentsDir = path.join('src', 'components');
 
-files.forEach(file => {
-    if (!file.endsWith('.js')) return;
+function fixImports(dir) {
+    if (!fs.existsSync(dir)) return;
+    const files = fs.readdirSync(dir);
 
-    const filePath = path.join(screensDir, file);
-    let content = fs.readFileSync(filePath, 'utf8');
+    files.forEach(file => {
+        if (!file.endsWith('.js')) return;
 
-    // Fix imports: ../../ -> ../
-    // We target specific key modules to avoid treating external modules (if any weird ones exist) incorrectly, 
-    // but specific folder references are safe.
+        const filePath = path.join(dir, file);
+        let content = fs.readFileSync(filePath, 'utf8');
 
-    let newContent = content
-        .replace(/from '\.\.\/\.\.\/theme'/g, "from '../theme'")
-        .replace(/from '\.\.\/\.\.\/components\//g, "from '../components/")
-        .replace(/from '\.\.\/\.\.\/context\//g, "from '../context/")
-        .replace(/from '\.\.\/\.\.\/services\//g, "from '../services/")
-        .replace(/from '\.\.\/\.\.\/i18n\//g, "from '../i18n/");
+        // Fix imports: ../../ -> ../
+        // We target specific key modules to avoid treating external modules (if any weird ones exist) incorrectly, 
+        // but specific folder references are safe.
 
-    if (content !== newContent) {
-        fs.writeFileSync(filePath, newContent);
-        console.log(`Fixed imports in ${file}`);
-    }
-});
+        let newContent = content
+            .replace(/from '\.\.\/\.\.\/theme'/g, "from '../theme'")
+            .replace(/from '\.\.\/\.\.\/components\//g, "from '../components/")
+            .replace(/from '\.\.\/\.\.\/context\//g, "from '../context/")
+            .replace(/from '\.\.\/\.\.\/services\//g, "from '../services/")
+            .replace(/from '\.\.\/\.\.\/i18n\//g, "from '../i18n/");
+
+        if (content !== newContent) {
+            fs.writeFileSync(filePath, newContent);
+            console.log(`Fixed imports in ${file}`);
+        }
+    });
+}
+
+fixImports(screensDir);
+fixImports(componentsDir);

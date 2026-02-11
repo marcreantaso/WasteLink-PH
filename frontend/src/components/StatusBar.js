@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing, borderRadius, shadows } from '../theme';
-import { useOffline } from '../../context/OfflineContext';
-import { useLanguage } from '../../context/LanguageContext';
+import { useOffline } from '../context/OfflineContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function StatusBar() {
     const { isOnline, pendingCount, isSyncing, syncNow } = useOffline();
