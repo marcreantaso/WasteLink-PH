@@ -92,16 +92,21 @@ const Collection = () => {
                             onChange={(e) => { setMaterial(e.target.value); setScanInfo(null); }}
                             style={{
                                 flex: 1, padding: '12px 16px', borderRadius: '14px',
-                                background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)',
-                                color: 'white', fontSize: '15px', cursor: 'pointer'
+                                background: '#1e293b', border: '1px solid var(--border)',
+                                color: 'white', fontSize: '15px', cursor: 'pointer',
+                                WebkitAppearance: 'none', appearance: 'none',
+                                backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' fill=\'%2394a3b8\' viewBox=\'0 0 16 16\'%3E%3Cpath d=\'M8 11L3 6h10l-5 5z\'/%3E%3C/svg%3E")',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'right 14px center',
+                                paddingRight: '40px'
                             }}
                         >
-                            <option value="PET">🧴 Plastic (PET)</option>
-                            <option value="HDPE">🪣 Rigid Plastic (HDPE)</option>
-                            <option value="METAL">🥫 Metal / Cans</option>
-                            <option value="PAPER">📄 Paper / Cardboard</option>
-                            <option value="GLASS">🧪 Glass Bottles</option>
-                            <option value="ORGANIC">🍃 Organic Waste</option>
+                            <option value="PET" style={{ background: '#1e293b', color: 'white', padding: '8px' }}>🧴 Plastic (PET)</option>
+                            <option value="HDPE" style={{ background: '#1e293b', color: 'white', padding: '8px' }}>🪣 Rigid Plastic (HDPE)</option>
+                            <option value="METAL" style={{ background: '#1e293b', color: 'white', padding: '8px' }}>🥫 Metal / Cans</option>
+                            <option value="PAPER" style={{ background: '#1e293b', color: 'white', padding: '8px' }}>📄 Paper / Cardboard</option>
+                            <option value="GLASS" style={{ background: '#1e293b', color: 'white', padding: '8px' }}>🧪 Glass Bottles</option>
+                            <option value="ORGANIC" style={{ background: '#1e293b', color: 'white', padding: '8px' }}>🍃 Organic Waste</option>
                         </select>
                         <button
                             type="button"

@@ -9,11 +9,36 @@ const INCIDENT_TYPES = [
     { value: 'HARASSMENT', label: '🛑 Harassment', desc: 'Threats, conflicts, or unsafe encounters' },
 ];
 
+// Reverse geocode using OpenStreetMap Nominatim (free, no API key)
+async function reverseGeocode(lat, lng) {
+    try {
+        const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16&addressdetails=1`,
+            { headers: { 'Accept-Language': 'en' } }
+        );
+        const data = await res.json();
+        if (data && data.address) {
+            const a = data.address;
+            // Build a readable location string
+            const parts = [];
+            if (a.road) parts.push(a.road);
+            if (a.suburb || a.neighbourhood || a.village) parts.push(a.suburb || a.neighbourhood || a.village);
+            if (a.city || a.town || a.municipality) parts.push(a.city || a.town || a.municipality);
+            if (a.state || a.region) parts.push(a.state || a.region);
+            return parts.length > 0 ? parts.join(', ') : data.display_name?.split(',').slice(0, 3).join(',');
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 const Safety = () => {
     const navigate = useNavigate();
     const [type, setType] = useState('HAZARD');
     const [desc, setDesc] = useState('');
     const [location, setLocation] = useState(null);
+    const [locationName, setLocationName] = useState(null);
     const [locating, setLocating] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [status, setStatus] = useState('');
@@ -26,16 +51,21 @@ const Safety = () => {
 
     const loadReports = async () => {
         const all = await getAllSafetyReports();
-        setReports(all.reverse().slice(0, 10)); // Last 10
+        setReports(all.reverse().slice(0, 10));
     };
 
     const captureLocation = () => {
         if (!('geolocation' in navigator)) return;
         setLocating(true);
         navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            async (pos) => {
+                const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                setLocation(coords);
                 setLocating(false);
+
+                // Get human-readable location name
+                const name = await reverseGeocode(coords.lat, coords.lng);
+                if (name) setLocationName(name);
             },
             () => setLocating(false),
             { enableHighAccuracy: true, timeout: 10000 }
@@ -51,6 +81,7 @@ const Safety = () => {
             type,
             description: desc,
             location: location,
+            locationName: locationName,
             status: 'REPORTED',
         });
 
@@ -104,20 +135,39 @@ const Safety = () => {
 
                 {/* GPS Location */}
                 <div style={{
-                    display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px',
-                    padding: '10px 14px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border)', fontSize: '12px'
+                    marginBottom: '16px', padding: '14px 16px', borderRadius: '14px',
+                    background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)',
                 }}>
-                    <span style={{ fontSize: '16px' }}>📍</span>
-                    {locating ? (
-                        <span style={{ color: 'var(--text-muted)' }}>Getting GPS location...</span>
-                    ) : location ? (
-                        <span style={{ color: '#10b981', fontWeight: '600' }}>
-                            {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
-                        </span>
-                    ) : (
-                        <span style={{ color: 'var(--text-muted)' }}>Location unavailable</span>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{
+                            width: '36px', height: '36px', borderRadius: '10px',
+                            background: 'rgba(16,185,129,0.15)', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0
+                        }}>📍</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                            {locating ? (
+                                <div style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Detecting location...</div>
+                            ) : location ? (
+                                <>
+                                    <div style={{ color: 'white', fontWeight: '600', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {locationName || 'Resolving address...'}
+                                    </div>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', marginTop: '2px' }}>
+                                        {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+                                    </div>
+                                </>
+                            ) : (
+                                <div style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Location unavailable</div>
+                            )}
+                        </div>
+                        {!locating && (
+                            <button type="button" onClick={captureLocation} style={{
+                                background: 'rgba(16,185,129,0.15)', border: 'none', color: '#10b981',
+                                borderRadius: '8px', padding: '6px 10px', fontSize: '11px',
+                                fontWeight: '600', cursor: 'pointer', flexShrink: 0
+                            }}>Refresh</button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Incident Type */}
@@ -177,22 +227,22 @@ const Safety = () => {
                         <div key={r.id} style={{
                             background: 'var(--card-bg)', borderRadius: '14px', padding: '14px 18px',
                             marginBottom: '8px', border: '1px solid var(--border)',
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                         }}>
-                            <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div style={{ fontWeight: '600', fontSize: '14px', color: 'white' }}>
                                     {INCIDENT_TYPES.find(t => t.value === r.type)?.label || r.type}
                                 </div>
-                                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                                    {new Date(r.createdAt).toLocaleDateString()} • {new Date(r.createdAt).toLocaleTimeString()}
-                                </div>
+                                <span style={{
+                                    padding: '4px 10px', borderRadius: '99px', fontSize: '11px',
+                                    fontWeight: '600', background: '#064e3b', color: '#34d399'
+                                }}>
+                                    {r.status}
+                                </span>
                             </div>
-                            <span style={{
-                                padding: '4px 10px', borderRadius: '99px', fontSize: '11px',
-                                fontWeight: '600', background: '#064e3b', color: '#34d399'
-                            }}>
-                                {r.status}
-                            </span>
+                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                {new Date(r.createdAt).toLocaleDateString()} • {new Date(r.createdAt).toLocaleTimeString()}
+                                {r.locationName && ` • 📍 ${r.locationName}`}
+                            </div>
                         </div>
                     ))}
                 </>
