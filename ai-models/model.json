@@ -1,0 +1,67 @@
+{
+    "format": "layers-model",
+    "generatedBy": "WasteLink PH AI Module",
+    "convertedBy": "TensorFlow.js Converter",
+    "modelTopology": {
+        "class_name": "Sequential",
+        "config": {
+            "name": "recyclable_classifier",
+            "layers": [
+                {
+                    "class_name": "MobileNetV2",
+                    "config": {
+                        "input_shape": [
+                            224,
+                            224,
+                            3
+                        ],
+                        "include_top": false,
+                        "weights": "imagenet"
+                    }
+                },
+                {
+                    "class_name": "GlobalAveragePooling2D",
+                    "config": {}
+                },
+                {
+                    "class_name": "Dense",
+                    "config": {
+                        "units": 128,
+                        "activation": "relu"
+                    }
+                },
+                {
+                    "class_name": "Dropout",
+                    "config": {
+                        "rate": 0.3
+                    }
+                },
+                {
+                    "class_name": "Dense",
+                    "config": {
+                        "units": 6,
+                        "activation": "softmax"
+                    }
+                }
+            ]
+        }
+    },
+    "weightsManifest": [
+        {
+            "paths": [
+                "weights.bin"
+            ],
+            "weights": []
+        }
+    ],
+    "trainingConfig": {
+        "loss": "categorical_crossentropy",
+        "optimizer": "adam",
+        "metrics": [
+            "accuracy"
+        ],
+        "epochs": 30,
+        "batch_size": 32,
+        "target_accuracy": 0.85
+    }
+}

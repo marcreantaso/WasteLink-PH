@@ -1,0 +1,31 @@
+{
+    "classes": [
+        "PET",
+        "HDPE",
+        "METAL",
+        "PAPER",
+        "ORGANIC",
+        "OTHER"
+    ],
+    "descriptions": {
+        "PET": "PET Plastic (Type 1) — bottles, containers, food packaging",
+        "HDPE": "HDPE Plastic (Type 2) — milk jugs, detergent bottles, pipes",
+        "METAL": "Metal — aluminum cans, steel cans, copper wire, tin",
+        "PAPER": "Paper — newspaper, cardboard, office paper, magazines",
+        "ORGANIC": "Organic — food waste, yard waste, compostable materials",
+        "OTHER": "Other — mixed waste, non-recyclable, unknown materials"
+    },
+    "prices_php_per_kg": {
+        "PET": 15,
+        "HDPE": 12,
+        "METAL": 25,
+        "PAPER": 8,
+        "ORGANIC": 2,
+        "OTHER": 1
+    },
+    "training_datasets": [
+        "TrashNet (https://github.com/garythung/trashnet)",
+        "Waste Classification Data (Kaggle)",
+        "TACO Dataset (http://tacodataset.org)"
+    ]
+}

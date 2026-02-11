@@ -1,0 +1,47 @@
+{
+    "expo": {
+        "name": "WasteLink PH",
+        "slug": "wastelink-ph",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#0D9F61"
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": false,
+            "bundleIdentifier": "ph.wastelink.app",
+            "infoPlist": {
+                "NSCameraUsageDescription": "WasteLink needs camera access to scan recyclables and take photo IDs.",
+                "NSLocationWhenInUseUsageDescription": "WasteLink needs location to track collection routes."
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#0D9F61"
+            },
+            "package": "ph.wastelink.app",
+            "permissions": [
+                "CAMERA",
+                "ACCESS_FINE_LOCATION",
+                "ACCESS_COARSE_LOCATION"
+            ]
+        },
+        "web": {
+            "favicon": "./assets/favicon.png",
+            "bundler": "metro"
+        },
+        "plugins": [
+            "expo-camera",
+            "expo-location",
+            "expo-image-picker"
+        ]
+    }
+}

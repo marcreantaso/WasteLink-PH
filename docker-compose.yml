@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # Laravel API
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wastelink-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      - APP_ENV=production
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-wastelink}
+      - DB_USERNAME=${DB_USERNAME:-wastelink}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET}
+      - TWILIO_SID=${TWILIO_SID}
+      - TWILIO_TOKEN=${TWILIO_TOKEN}
+      - TWILIO_FROM=${TWILIO_FROM}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - wastelink-net
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: wastelink-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-wastelink}
+      POSTGRES_USER: ${DB_USERNAME:-wastelink}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - wastelink-net
+
+  # Redis (queues, caching)
+  redis:
+    image: redis:7-alpine
+    container_name: wastelink-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - wastelink-net
+
+  # Queue Worker
+  queue:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wastelink-queue
+    restart: unless-stopped
+    command: php artisan queue:work --tries=3 --timeout=90
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-wastelink}
+      - DB_USERNAME=${DB_USERNAME:-wastelink}
+      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - REDIS_HOST=redis
+    depends_on:
+      - api
+      - redis
+    networks:
+      - wastelink-net
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: wastelink-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+    networks:
+      - wastelink-net
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  wastelink-net:
+    driver: bridge
